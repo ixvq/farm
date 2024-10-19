@@ -1,0 +1,106 @@
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "autofarm",
+   LoadingTitle = "nvm",
+   LoadingSubtitle = "by t7ut",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "t7ut hub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided",
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+local MainTab = Window:CreateTab("autofarm", nil) -- Title, Image
+local AutofarmSection = MainTab:CreateSection("Autofarm")
+
+local AutofarmButton = MainTab:CreateButton({
+   Name = "Autofarm addon",
+   Callback = function()
+   -- Required libraries for key pressing and sleeping
+-- If using a specific environment like Cheat Engine or any Lua API, include necessary libraries
+-- For example, Cheat Engine can hook into memory addresses for "get_current_candy"
+
+-- Simulate key presses (this function may need adjustment depending on your Lua environment)
+function press_key(key)
+    -- Replace with specific key press functionality depending on your environment
+    -- In Cheat Engine, for example, you might use:
+    -- keyDown(key)
+    -- sleep(100)
+    -- keyUp(key)
+    print("Pressing key: " .. key)
+end
+
+-- Function to simulate delay (sleep)
+function sleep(n)
+    os.execute("sleep " .. tonumber(n))
+end
+
+-- Placeholder function to get the current candy count
+-- This must be replaced with actual logic to retrieve the candy count in your game
+function get_current_candy()
+    -- This function should return the number of coins in your candy bag
+    -- Example: Read from memory address, API, or other methods your game allows
+    -- For testing purposes, we'll use a static value
+    local candy_count = 0
+    -- Replace with actual logic to fetch the candy count
+    return candy_count
+end
+
+-- Main autofarming function
+function auto_farm()
+    local max_candy = 40  -- Full bag contains 40 candies
+    local round_active = true  -- Track if a round is still active
+    local check_interval = 1 -- Time between each candy check in seconds
+    
+    while round_active do
+        -- Check how many candies are in the bag
+        local current_candy = get_current_candy()
+
+        -- If the bag is full (>= 40 candies), spam "K" and "C" keys
+        if current_candy >= max_candy then
+            print("Candy bag is full, spamming 'K' and 'C' keys.")
+            press_key("k")
+            sleep(2)  -- Delay between key presses to prevent spamming too fast
+            press_key("c")
+            sleep(2)
+        else
+            print("Candy bag not full yet, current candy count: " .. current_candy)
+        end
+
+        -- Check if the round has ended (e.g., candy count resets to 0)
+        -- This is a simple assumption that the round ends when the candy count resets to 0
+        if current_candy == 0 then
+            print("Round ended, waiting for the new round to start.")
+            -- Wait for a new round to start (when candy count increases again)
+            while get_current_candy() == 0 do
+                sleep(1)  -- Check every 1 second to see if the new round started
+            end
+            print("New round detected!")
+        end
+
+        -- Small delay before checking again
+        sleep(check_interval)
+    end
+end
+
+-- Start the auto-farming process
+auto_farm()
+
+   end,
+})
